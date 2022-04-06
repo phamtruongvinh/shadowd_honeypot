@@ -1,4 +1,13 @@
 version: '3.1'
+networks:
+  shadowd_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.20.0.0/16"
+          gateway: 172.20.0.1
+# Shadownd container
 services:
   db:
     image: zecure/shadowd_database:12.4
@@ -7,6 +16,8 @@ services:
       - "${SHADOWD_DB_LOCATION}:/var/lib/postgresql/data"
     env_file:
       - "${SHADOWD_ENV_DB_LOCATION}"
+    networks:
+      - shadowd_net
 
   web:
     image: zecure/shadowd_ui:2
@@ -21,6 +32,8 @@ services:
       - "SHADOWD_DB_HOST=db"
     env_file:
       - "${SHADOWD_ENV_DB_LOCATION}"
+    networks:
+      - shadowd_net
 
   shadowd:
     image: zecure/shadowd:2
@@ -35,7 +48,36 @@ services:
       - "SHADOWD_DB_HOST=db"
     env_file:
       - "${SHADOWD_ENV_DB_LOCATION}"
+    networks:
+      shadowd_net:
+        ipv4_address: 172.20.0.21
+# Wordpress container
+  wpdb:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress  
+    networks:
+      - shadowd_net
 
-    # Example for more verbose logging. Uncomment to enable.
-    #command: ["/usr/bin/shadowd", "-c", "/etc/shadowd/shadowd.ini", "-U", "shadowd", "-G", "shadowd", "--verbose"]
+  wordpress:
+    depends_on:
+      - wpdb
+    image: wordpress:latest
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: wpdb
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress  
+    networks:
+      - shadowd_net
 
+  
+    
+  
