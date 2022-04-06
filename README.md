@@ -23,7 +23,7 @@ For more information about other commands and configuration options check out th
 
 Run this command for create new user login shadowd web UI.
 
-sudo ./shadowdctl exec web ./app/console swd:register --name=arg (--email=arg) (--admin)
+    sudo ./shadowdctl exec web ./app/console swd:register --name=arg (--email=arg) (--admin)
 
 ## Configuration
 
