@@ -19,6 +19,12 @@ You can use the following command to start Shadow Daemon:
 Modify the file `docker-compose.yml` for fine-grained control.
 For more information about other commands and configuration options check out the [Docker Compose manual](https://docs.docker.com/compose/).
 
+# Create user for Shadowd
+
+Run this command for create new user login shadowd web UI.
+
+    sudo ./shadowdctl exec web ./app/console swd:register --name=arg (--email=arg) (--admin)
+
 ## Configuration
 
 You can change the paths of the database and the database password in the file `.env`.
