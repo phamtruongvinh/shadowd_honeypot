@@ -71,10 +71,14 @@ services:
     image: wordpress:latest
     volumes:
       - wordpress_data:/var/www/html
-      - ./shadowd_php-2.1.1:/usr/share/php
+      - ./shadowd_php-2.1.1:/usr/share/shadowd/php
       - type: bind
         source: ./wpconfig/.htaccess
         target: /var/www/html/.htaccess
+
+      - type: bind
+        source: ./shadowd_php-2.1.1/misc/examples/connectors.ini
+        target: /etc/shadowd/connectors.ini
     ports:
       - "8000:80"
     restart: always
